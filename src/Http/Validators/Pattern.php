@@ -1,16 +1,15 @@
-<?php 
+<?php
 
 namespace Mini\Framework\Http\Validators;
 
 use Attribute;
 use TypeError;
 
-#[Attribute(Attribute::TARGET_PARAMETER |Attribute::TARGET_PROPERTY)]
-readonly class Pattern implements Validator
+#[Attribute(Attribute::TARGET_PARAMETER | Attribute::TARGET_PROPERTY)]
+class Pattern implements Validator
 {
 
-  public function __construct(private string $regex) {
-  }
+  public function __construct(private readonly string $regex) {}
 
   public function isValid(mixed $value): bool
   {
@@ -19,5 +18,4 @@ readonly class Pattern implements Validator
     }
     return preg_match("/$this->regex/", $value);
   }
-
 }
