@@ -6,7 +6,7 @@ const EMAIL_PATTERN = "^(?=.{1,254}$)(?=.{1,64}@)[A-Za-z0-9!#$%&'*+\/=?^_`{|}~.-
 
 describe("Pattern Validator", function () {
 
-  it("returns true when value matches the pattern", function (string $pattern, string $case) {
+  it("returns true for valid values", function (string $pattern, string $case) {
     $validator = new Pattern($pattern);
     expect($validator->isValid($case))
       ->toBeTrue();
@@ -15,7 +15,7 @@ describe("Pattern Validator", function () {
     [EMAIL_PATTERN, "john@doe.test"],
   ]);
 
-  it("returns false when value not matches the pattern ", function (string $pattern, string $case) {
+  it("returns false for invalid values", function (string $pattern, string $case) {
     $validator = new Pattern($pattern);
     expect($validator->isValid($case))
       ->toBeFalse();
@@ -25,7 +25,7 @@ describe("Pattern Validator", function () {
     [EMAIL_PATTERN, ""],
   ]);
 
-  it("throw TypeError when value is not a string", function (string $pattern, mixed $case) {
+  it("throw TypeError for values non-strings", function (string $pattern, mixed $case) {
     $validator = new Pattern($pattern);
     try {
       $validator->isValid($case);
