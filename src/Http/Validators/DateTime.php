@@ -36,11 +36,6 @@ final class DateTime extends Pattern
   private function isValidTime(string $time): bool
   {
     $timeExploded = explode(":", $time);
-    $sizeTime = count($timeExploded);
-    if ($sizeTime < 3 || $sizeTime  > 3) {
-      return false;
-    }
-
     [$hour, $minute, $seconds] = $timeExploded;
     return $this->isValidHour($hour)
       && $this->isValidMinute($minute)
