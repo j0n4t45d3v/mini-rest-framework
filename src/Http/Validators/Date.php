@@ -17,11 +17,12 @@ final class Date extends Pattern
 
   public function isValid(mixed $value): bool
   {
-    if (!parent::isValid($value)) {
-      return false;
-    }
-    [$year, $month, $day] = explode("-", $value);
+    return parent::isValid($value) && $this->isValidDate($value);
+  }
 
+  private function isValidDate(string $value): bool  
+  {
+    [$year, $month, $day] = explode("-", $value);
     return checkdate($month, $day, $year);
   }
 
