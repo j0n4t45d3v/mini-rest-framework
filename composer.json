@@ -16,7 +16,7 @@
         }
     ],
     "scripts": {
-      "test": "pest"
+      "tests": "pest"
     },
     "require-dev": {
         "pestphp/pest": "^4.1"
