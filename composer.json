@@ -5,7 +5,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Mini\\Framework\\": "src/"
+            "Mini\\Framework\\": "src/",
+            "Tests\\": "tests/"
         }
     },
     "authors": [
@@ -14,5 +15,15 @@
             "email": "delimajonatas875@gmail.com"
         }
     ],
-    "require": {}
+    "scripts": {
+      "test": "pest"
+    },
+    "require-dev": {
+        "pestphp/pest": "^4.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
 }
