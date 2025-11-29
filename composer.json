@@ -16,7 +16,8 @@
         }
     ],
     "scripts": {
-      "tests": "pest"
+      "tests": "pest",
+      "tests:coverage": "pest --coverage --min=80"
     },
     "require-dev": {
         "pestphp/pest": "^4.1"
