@@ -18,7 +18,7 @@ class Kernel
   private const CACHE_DIR = "cache/";
   private const CACHE_ROUTE = self::CACHE_DIR . "routes.php";
 
-  public function registerController(string $directory = "src/Controller"): void
+  public function registerControllers(string $directory = "src/Controller"): void
   {
     $controllerFiles = new RecursiveIteratorIterator(
       new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS)
