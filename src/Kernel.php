@@ -120,9 +120,9 @@ class Kernel
 
     if (str_contains($uri, "?")) {
       [$uri, $queries] = array_pad(explode("?", $uri, 2), 2, "");
-      
+
       $queries = explode("&", $queries);
-      foreach($queries as $query) { 
+      foreach ($queries as $query) {
         [$name, $value] = explode("=", $query);
         $queryParams[$name] = $value;
       }
@@ -135,6 +135,23 @@ class Kernel
     $uris = require self::CACHE_ROUTE;
 
     $route = $uris[$uri] ?? null;
+
+    $pathVariables = [];
+    if (!$route) {
+      foreach ($uris as $path => $methods) {
+        $path = str_replace("/", "\/", $path);
+        preg_match_all("/{([^\/]+)}/", $path, $variables);
+        $path = preg_replace("/{[^\/]+}/", "([^\/]+)", $path);
+        $pattern = "/^$path$/";
+        if (preg_match_all($pattern, $uri, $values)) {
+          $route = $methods;
+          foreach ($variables[1] as $key => $variable) {
+            $pathVariables[$variable] = $values[$key + 1][0];
+          }
+          break;
+        }
+      }
+    }
 
     header("Content-Type: application/json");
     if (!$route) {
@@ -171,11 +188,29 @@ class Kernel
           "is_body" => $isBody
         ] = $arg;
 
+        $value = null;
         if ($isBody) {
           $body = file_get_contents("php://input");
           $bodyArray = json_decode($body, true);
-          $argsValue[$name] = $bodyArray;
+          $value = $bodyArray;
         }
+
+        if ($name == "queries") {
+          $value = $queryParams ?? [];
+        }
+
+        if (key_exists($name, $pathVariables)) {
+          $value = $pathVariables[$name];
+        }
+
+        if (key_exists($name, $queryParams)) {
+          $value = $queryParams[$name];
+        }
+
+        if (!is_null($value)) {
+          $argsValue[$name] = $value;
+        }
+        
       }
 
       echo json_encode(call_user_func_array([$instance, $method["method"]], $argsValue));
