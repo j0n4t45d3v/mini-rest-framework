@@ -1,11 +1,15 @@
 {
-    "name": "mini/framework",
+    "name": "j0n4t45d3v/mini-rest-framework",
     "description": "PHP Mini Rest Framework",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Mini\\Framework\\": "src/",
+            "Mini\\Framework\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "Tests\\": "tests/"
         }
     },
@@ -26,5 +30,7 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
