@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace Mini\Framework\Http\Validators;
 
