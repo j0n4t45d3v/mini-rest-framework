@@ -24,7 +24,7 @@
       "tests:coverage": "pest --coverage --min=80"
     },
     "require-dev": {
-        "pestphp/pest": "^4.1"
+        "pestphp/pest": "^3.8"
     },
     "config": {
         "allow-plugins": {
