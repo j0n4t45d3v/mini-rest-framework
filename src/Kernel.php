@@ -2,9 +2,17 @@
 
 namespace Mini\Framework;
 
+use Mini\Framework\Core\_Internal\Handlers\DefaultExceptionHandler;
 use Mini\Framework\Core\Attributes\Body;
 use Mini\Framework\Core\Attributes\Controller;
+use Mini\Framework\Core\Attributes\Middleware;
 use Mini\Framework\Core\Attributes\Path;
+use Mini\Framework\Core\ExceptionHandler;
+use Mini\Framework\Core\Models\HttpContext;
+use Mini\Framework\Core\Models\Request;
+use Mini\Framework\Core\Models\Response;
+use Mini\Framework\Http\MiddlewareHandlerAfter;
+use Mini\Framework\Http\MiddlewareHandlerBefore;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
@@ -96,9 +104,16 @@ class Kernel
           }
           $path = "$contextPath$uri";
 
+          $middlewares = $method->getAttributes(Middleware::class);
+
           $cache[$path][$routeInfo->httpMethod->name] = [
             "class" => $classFullname,
             "method" => $method->getName(),
+            "middlewares" => array_map(function ($middleware){
+              /**@var Middleware $teste */
+              $teste = $middleware->newInstance();
+              return $teste->handler;
+            }, $middlewares),
             "args" =>  array_map(fn(ReflectionParameter $p) =>  [
               "name" => $p->getName(),
               "type" => $p->getType()->getName(),
@@ -183,7 +198,9 @@ class Kernel
     ini_set('log_errors', '1');
     try {
       $instance = new $method["class"]();
+      $firstMiddleware = $method["middlewares"][0];
       $args = $method["args"] ?? [];
+      $body = null;
       $argsValue = [];
       foreach ($args as $arg) {
         [
@@ -217,7 +234,31 @@ class Kernel
         
       }
 
-      echo json_encode(call_user_func_array([$instance, $method["method"]], $argsValue));
+      $middleware = null;
+      if ($firstMiddleware) {
+        $middleware = new $firstMiddleware();
+      }
+      $response = new Response();
+      $request = new Request($body);
+      $ctx = new HttpContext($request, $response);
+      if ($middleware instanceof MiddlewareHandlerBefore) {
+        $middleware->before($ctx);
+      }
+
+      if ($middleware instanceof MiddlewareHandlerBefore && !$ctx->isNext()) {
+        http_response_code($response->getStatusCode());
+        echo json_encode($response->getBody());
+        return;
+      }
+
+      $response->setBody(call_user_func_array([$instance, $method["method"]], $argsValue));
+
+      if ($middleware instanceof MiddlewareHandlerAfter) {
+        $middleware->after($ctx);
+      }
+
+      echo json_encode($response->getBody());
+
     } catch (Throwable $e) {
       $statusCode = 500;
       $headers = [];
