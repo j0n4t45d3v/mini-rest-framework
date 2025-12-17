@@ -56,7 +56,7 @@ final class JsonObjectMapper
     return $instance;
   }
 
-  private static function validateValue(ReflectionNamedType $type, string $property, mixed $value)
+  private static function validateValue(ReflectionNamedType $type, string $property, mixed $value): void
   {
     $isValidType = match ($type->getName()) {
       'int' => is_numeric($value) || is_int($value),
@@ -75,7 +75,6 @@ final class JsonObjectMapper
         "Invalid type for property '$property'."
       );
     }
-    return;
   }
 
   public static function unwrapper(object $instance): string
