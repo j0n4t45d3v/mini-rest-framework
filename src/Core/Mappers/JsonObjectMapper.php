@@ -43,15 +43,14 @@ final class JsonObjectMapper
     foreach ($reflector->getProperties() as $property) {
       $typePropertier = $property->getType();
       $jsonProperty = $property->getAttributes(self::ATTRIBUTE);
+      $property->setAccessible(true);
       if (empty($jsonProperty)) {
-        $property->setAccessible(true);
         $property->setValue($instance, null);
         continue;
       }
       $jsonPropertyInfo = $jsonProperty[0]->newInstance();
       $jsonPropertyValue = $jsonDecoded[$jsonPropertyInfo->name] ?? null;
       self::validateValue($typePropertier, $jsonPropertyInfo->name, $jsonPropertyValue);
-      $property->setAccessible(true);
       $property->setValue($instance, $jsonPropertyValue);
     }
     return $instance;
