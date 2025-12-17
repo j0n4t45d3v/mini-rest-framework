@@ -163,7 +163,7 @@ class Kernel
       echo json_encode([
         "error" => "path not found",
         "status" => "not_found",
-        "timestampe" => date(DATE_ATOM)
+        "timestamp" => date(DATE_ATOM)
       ]);
       exit(0);
     }
@@ -175,7 +175,7 @@ class Kernel
       echo json_encode([
         "error" => "'$httpMethod' method not allowed to path '$uri'",
         "status" => "method_not_allowed",
-        "timestampe" => date(DATE_ATOM)
+        "timestamp" => date(DATE_ATOM)
       ]);
       exit(0);
     }
