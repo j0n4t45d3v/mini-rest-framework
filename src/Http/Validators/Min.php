@@ -6,10 +6,10 @@ use Attribute;
 use TypeError;
 
 #[Attribute(Attribute::TARGET_PARAMETER | Attribute::TARGET_PROPERTY)]
-final readonly class Min implements Validator
+final class Min implements Validator
 {
 
-  public function __construct(private int $size) {}
+  public function __construct(private readonly int $size) {}
 
   public function isValid(mixed $value): bool
   {
