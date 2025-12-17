@@ -20,7 +20,7 @@ use ReflectionMethod;
 use ReflectionParameter;
 use Throwable;
 
-class Kernel
+final class Kernel
 {
 
   private const CACHE_DIR = "cache/";
