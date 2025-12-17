@@ -18,6 +18,10 @@ class Kernel
   private const CACHE_DIR = "cache/";
   private const CACHE_ROUTE = self::CACHE_DIR . "routes.php";
 
+  public function __construct(
+      private readonly ExceptionHandler $exceptionHandler = new DefaultExceptionHandler()
+  ){}
+
   public function registerControllers(string $directory = "src/Controller"): void
   {
     $controllerFiles = new RecursiveIteratorIterator(
@@ -215,13 +219,13 @@ class Kernel
 
       echo json_encode(call_user_func_array([$instance, $method["method"]], $argsValue));
     } catch (Throwable $e) {
-      http_response_code(500);
-      echo json_encode([
-        "error" => $e->getMessage(),
-        "status" => "internal_server_error",
-        "stacktrace" => $e->getTraceAsString(),
-        "timestampe" => date(DATE_ATOM)
-      ]);
+      $statusCode = 500;
+      $headers = [];
+      echo $this->exceptionHandler->handler($e, $statusCode, $headers);
+      foreach ($headers as $name => $value) {
+        header("$name: $value");
+      }
+      http_response_code($statusCode);
     }
   }
 }
