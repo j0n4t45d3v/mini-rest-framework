@@ -23,7 +23,7 @@ final class JsonObjectMapper
   /**
    * @template T
    * @param string $jsonRaw
-   * @param string-class<T> $jsonRaw
+   * @param class-string<T> $className
    * @return T|null
    */
   public static function wrapper(string $jsonRaw, string $className): mixed
