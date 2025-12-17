@@ -132,7 +132,7 @@ final class Kernel
     file_put_contents(self::CACHE_ROUTE, $content);
   }
 
-  public function dispatch()
+  public function dispatch(): void
   {
     $uri = $_SERVER["REQUEST_URI"] ?? "/";
     $queryParams = [];
